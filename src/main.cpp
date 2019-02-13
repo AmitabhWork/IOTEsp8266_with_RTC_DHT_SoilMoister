@@ -1,12 +1,38 @@
-#include <DHTesp.h>
+
+
+//Connection
+
+/*
+RTC - ESP8266
+SDA - D2
+SCL - D1
+GND - GND
+VCC - 3.3V
+*/
+
+/*
+DHT22 - ESP8266
+OUT/DATA - D3
+GND - GND
+VCC - 3.3V
+*/
+
+/*
+SoilMoister -ESP8266
+AO - A0
+GND - GND
+VCC - 3.3V
+*/
 
 // Include Libraries
+#include <DHTesp.h>
 #include "Arduino.h"
 #include "RTClib.h"
 
 // Pin Definitions
 #define DHT_PIN_DATA D3
 #define SOILMOISTURE3V3_PIN_SIG A0 /* Connect Soil moisture analog sensor pin to A0 of NodeMCU */
+
 DHTesp dht;
 RTC_DS1307 RTC;
 double analogVolts = 0.0;
@@ -45,13 +71,12 @@ int convertToPercent(int value)
 
 void printValuesToSerial()
 {
-  Serial.println("--------");
-  Serial.println("\n\nAnalog Value: ");
+
+  Serial.print("\n\nAnalog Value: ");
   Serial.print(sensorValue);
-  Serial.print("\nPercent: ");
+  Serial.print("\nSoil Moisture : ");
   Serial.print(percent);
-  Serial.print("%");
-  Serial.println("--------");
+  Serial.println("%");
 }
 void showTime()
 {
@@ -70,48 +95,40 @@ void showTime()
   Serial.println();
 }
 
-float getSoilMoister()
+void calculateSoilMoister()
 {
 
-  float res = analogRead(SOILMOISTURE3V3_PIN_SIG);
-  analogValue = analogRead(A0);
-  Serial.print("analogValue : ");
-  Serial.println(analogValue);
-  Serial.println("");
-  Serial.print("analogVolts : ");
-  analogVolts = (analogValue * 3.08) / 1024;
-  Serial.print(analogVolts);
-  Serial.println("");
-  Serial.print("raw som : ");
-  Serial.println(res);
+  analogValue = analogRead(SOILMOISTURE3V3_PIN_SIG);
 
-  float moisture_percentage = (100.00 - ((analogRead(SOILMOISTURE3V3_PIN_SIG) / 1023.00) * 100.00));
+  // analogVolts = (analogValue * 3.08) / 1024;
+  // Serial.print(analogVolts);
+
   percent = convertToPercent(analogValue);
   printValuesToSerial();
-
-  return moisture_percentage;
 }
-// Main logic of your circuit. It defines the interaction between the components you selected. After setup, it runs over and over again, in an eternal loop.
-void loop()
+void printTempHumidity()
 {
   TempAndHumidity measurement = dht.getTempAndHumidity();
-  float moisture_percentage;
 
-  moisture_percentage = getSoilMoister();
-
-  Serial.println("");
-  Serial.print("Soil Moisture(in Percentage) = ");
-  Serial.print(moisture_percentage);
-  Serial.println("%");
   Serial.println("");
   Serial.print("Temp  : ");
-  Serial.println(measurement.temperature);
-
+  Serial.print(measurement.temperature);
+  Serial.println("°C");
   Serial.print("Humid : ");
-  Serial.println(measurement.humidity);
-  Serial.println("====================");
+  Serial.print(measurement.humidity);
+  Serial.print("%");
   Serial.println("");
+}
 
+void loop()
+{
   showTime();
+  Serial.println("");
+  calculateSoilMoister();
+  Serial.println("");
+  printTempHumidity();
+  Serial.println("");
+  Serial.println("===========");
+
   delay(5000);
 }
