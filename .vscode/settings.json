@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.osx": {
+        "PATH": "/Users/amitabhsarkar/.platformio/penv/bin:/Users/amitabhsarkar/.platformio/penv:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/amitabhsarkar/Library/Android/sdk/tools:/Users/amitabhsarkar/Library/Android/sdk/platform-tools:/Users/amitabhsarkar/gradle/gradle-4.10.2/bin",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
